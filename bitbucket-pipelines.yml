@@ -1,0 +1,24 @@
+pipelines:
+  default:
+    - step:
+        image: node
+        script:
+          - npm install --quiet                    
+          - npx prisma migrate reset --preview-feature --force
+          - npx prisma migrate dev --name init --preview-feature
+          - npx prisma generate
+          - npm run-script build
+          - npm run test:force 
+        services:
+          - postgres
+          - docker
+definitions:
+  services:
+    docker:
+      memory: 2048  #increasing docker service memory
+    postgres:
+      image: postgres
+      environment:
+        POSTGRES_DB: admin
+        POSTGRES_USER: erick
+        POSTGRES_PASSWORD: 123456

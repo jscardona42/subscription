@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Auditorias {
+  auditoria_id       Int       @id @default(autoincrement()) @db.SmallInt
+  login_id           Int?      @db.SmallInt
+  status             String?   @db.VarChar(50)
+  fecha_creacion     DateTime? @default(now()) @db.Timestamp(6)
+  tipo               String?   @db.VarChar(50)
+  username           String?   @db.VarChar(100)
+  rol                String?   @db.VarChar(50)
+  tiene_doble_factor Boolean?
+}
+
+model DoblesFactores {
+  doble_factor_id       Int                @id @default(autoincrement()) @db.SmallInt
+  otplib_secreta        String?            @db.VarChar(255)
+  esta_configurado      Boolean            @default(false)
+  login_id              Int                @db.SmallInt
+  codigo_recuperacion   String?            @db.VarChar(255)
+  metodo_validacion_id  Int?               @db.SmallInt
+  fecha_creacion_codigo DateTime?          @db.Timestamp(6)
+  Login                 Login              @relation(fields: [login_id], references: [login_id])
+  MetodosValidacion     MetodosValidacion? @relation(fields: [metodo_validacion_id], references: [metodo_validacion_id])
+}
+
+model Entidades {
+  entidad_id Int        @id @default(autoincrement()) @db.SmallInt
+  nombre     String     @db.VarChar(255)
+  resolver   String?    @db.VarChar(255)
+  Menus      Menus[]
+  Permisos   Permisos[]
+}
+
+model Login {
+  login_id           Int              @id @default(autoincrement()) @db.SmallInt
+  username           String
+  password           String?
+  token              String?
+  salt               String?
+  rol_id             Int              @db.SmallInt
+  tiene_doble_factor Int?             @default(0) @db.SmallInt
+  usuario_id         Int?             @db.SmallInt
+  Roles              Roles            @relation(fields: [rol_id], references: [rol_id])
+  Usuarios           Usuarios?        @relation(fields: [usuario_id], references: [usuario_id])
+  DoblesFactores     DoblesFactores[]
+}
+
+model Menus {
+  menu_id      Int        @id @default(autoincrement())
+  title        String
+  path         String
+  isEntity     Boolean
+  parentMenuId Int?
+  entidad_id   Int?       @db.SmallInt
+  order        Int?       @db.SmallInt
+  level        Int?       @db.SmallInt
+  Entidades    Entidades? @relation(fields: [entidad_id], references: [entidad_id])
+  Menus        Menus?     @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
+  other_Menus  Menus[]    @relation("MenusToMenus_parentMenuId")
+}
+
+model MetodosValidacion {
+  metodo_validacion_id Int              @id @default(autoincrement()) @db.SmallInt
+  metodo               String           @db.VarChar(255)
+  activo               Boolean?
+  DoblesFactores       DoblesFactores[]
+}
+
+model Microservicios {
+  microservicio_id Int      @id @default(autoincrement()) @db.SmallInt
+  name             String   @db.VarChar(255)
+  hostname         String   @db.VarChar(255)
+  puerto           Int
+  url              String   @db.VarChar(32)
+  activo           Boolean?
+}
+
+model Permisos {
+  permiso_id    Int             @id @default(autoincrement()) @db.SmallInt
+  entidad_id    Int?            @db.SmallInt
+  permiso       String?
+  es_publico    Boolean?
+  Entidades     Entidades?      @relation(fields: [entidad_id], references: [entidad_id])
+  RolesPermisos RolesPermisos[]
+}
+
+model Roles {
+  rol_id        Int             @id @default(autoincrement()) @db.SmallInt
+  rol           String          @db.VarChar(100)
+  Login         Login[]
+  RolesMenus    RolesMenus[]
+  RolesPermisos RolesPermisos[]
+}
+
+model RolesMenus {
+  rol_menu_id   Int      @id @default(autoincrement()) @db.SmallInt
+  rol_id        Int?     @db.SmallInt
+  permisos_menu String[]
+  Roles         Roles?   @relation(fields: [rol_id], references: [rol_id])
+}
+
+model RolesPermisos {
+  rol_permiso_id Int       @id @default(autoincrement()) @db.SmallInt
+  rol_id         Int       @db.SmallInt
+  permiso_id     Int?      @db.SmallInt
+  Permisos       Permisos? @relation(fields: [permiso_id], references: [permiso_id])
+  Roles          Roles     @relation(fields: [rol_id], references: [rol_id])
+}
+
+model Usuarios {
+  usuario_id Int      @id @default(autoincrement()) @db.SmallInt
+  nombre     String   @db.VarChar(100)
+  email      String   @db.VarChar(100)
+  activo     Boolean? @default(true)
+  Login      Login[]
+}
