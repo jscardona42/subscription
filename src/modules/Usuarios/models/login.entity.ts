@@ -6,7 +6,7 @@ import { Usuarios } from './usuarios.entity';
 @ObjectType()
 export class Login {
   @Field((type) => ID)
-  login_id: number
+  usuario_id: number
 
   @Field()
   @IsNotEmpty()
@@ -28,8 +28,7 @@ export class Login {
   @Field((type) => Number, { nullable: true })
   tiene_doble_factor?: number | null
 
-  @Field((type) => Number, { nullable: true })
-  usuario_id?: number | null
+
 
   @Field((type) => Usuarios, { nullable: true })
   Usuarios?: Usuarios
@@ -40,7 +39,7 @@ export class Login {
 @ObjectType()
 export class LoginSubscription {
   @Field({ nullable: true })
-  login_id?: number
+  usuario_id?: number
   @Field((type) => String, { nullable: true })
   token?: string | null
 
