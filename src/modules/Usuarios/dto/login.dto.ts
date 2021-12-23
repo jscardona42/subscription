@@ -30,7 +30,7 @@ export class SignInUserInput {
 export class ChangePasswordInput {
     @Field()
     @IsNotEmpty()
-    login_id: number
+    usuario_id: number
 
     @Field()
     @IsNotEmpty()

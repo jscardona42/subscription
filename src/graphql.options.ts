@@ -15,16 +15,17 @@ export class GraphqlOptions implements GqlOptionsFactory {
       playground: true,
       //tracing: true,
      // path: '/check',
-      // cors: {
-      //   origin: '*',
-      //   credentials: true,
-      // },
+      cors: {
+        origin: '*',
+        credentials: true,
+      },
       installSubscriptionHandlers: true,
       subscriptions: {
         keepAlive: 1000,
         path: '/subscriptions',
         onConnect: (connectionParams, webSocket, context) => {   
-
+          //console.log('webSocket',webSocket );
+          
          
 
           if (connectionParams['Authorization'] != null && connectionParams['Authorization'] != '') {

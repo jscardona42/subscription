@@ -8,24 +8,18 @@ type Usuarios {
   email: String!
   activo: Boolean
   empresa_id: Float
-}
-
-type Login {
-  login_id: ID!
   username: String!
   password: String!
   token: String
   salt: String
   rol_id: Float!
   tiene_doble_factor: Float
-  usuario_id: Float
-  Usuarios: Usuarios
 }
 
 type Query {
-  checkToken: Login
+  checkToken: Usuarios
 }
 
 type Subscription {
-  checkTokenHandler: Login
+  checkTokenHandler: Usuarios
 }

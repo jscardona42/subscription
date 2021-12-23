@@ -28,10 +28,13 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
             if (authorization) {
                 
-                let token = authorization.split(" ")[1]
+                let token = authorization.split(" ")[1];
+
+                // console.log('token',token);
+                
                 let token_decrypt= CryptoJS.AES.decrypt( token,process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8)  
                 let token_decode= jwt.decode(token_decrypt)
-                
+                // console.log('token_decrypt',token_decrypt);
                 
                 if (jwt.verify(token_decrypt, process.env.JWT_SECRET)) {
                    
@@ -41,9 +44,9 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
                         return true;
                     }
 
-                    let login_user= await prisma.login.findFirst({
+                    let login_user= await prisma.usuarios.findFirst({
                         where: { 
-                        login_id: token_decode['userId'],
+                        usuario_id: token_decode['userId'],
                         token: token_decrypt
                         },
                     })
