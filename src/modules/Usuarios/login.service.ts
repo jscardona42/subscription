@@ -23,9 +23,9 @@ export class LoginService {
     let token_decode= this.jwtService.decode(token_decrypt)
 
 
-    return await this.prisma.login.findFirst({
+    return await this.prisma.usuarios.findFirst({
       where: { 
-        login_id: token_decode['userId'],
+        usuario_id: token_decode['userId'],
       },
     })
   }

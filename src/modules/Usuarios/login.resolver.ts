@@ -1,3 +1,4 @@
+import { Usuarios } from './models/usuarios.entity';
 import { Args, Context, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { LoginService } from './login.service';
 import { Login} from './models/login.entity';
@@ -7,7 +8,7 @@ import * as CryptoJS from 'crypto-js';
 
 const pubSub = new PubSub();
 
-@Resolver(() => Login)
+@Resolver(() => Usuarios)
 export class LoginResolver {
   
 
@@ -16,7 +17,7 @@ export class LoginResolver {
   ) { }
 
   //@UseGuards(GqlAuthGuard)
-  @Query(returns => Login, { nullable: true })
+  @Query(returns => Usuarios, { nullable: true })
   async checkToken(@Context() ctx): Promise<any> {  
     let _check = await this.service.checktoken(ctx)
     pubSub.publish('checkTokenHandler', { checkTokenHandler: _check }); 
@@ -24,7 +25,7 @@ export class LoginResolver {
   }
 
 
-  @Subscription(returns => Login, { nullable: true, filter: (payload, variables, context) => {
+  @Subscription(returns => Usuarios, { nullable: true, filter: (payload, variables, context) => {
 
       if (context.req.headers.authorization==null) {
           return false 
@@ -35,7 +36,7 @@ export class LoginResolver {
       let token_decode= jwt.decode(token_decrypt)     
           
 
-      if (payload.checkTokenHandler.login_id === token_decode['userId'] && context.req.headers.authorization.split(" ")[1] != payload.checkTokenHandler.token) {
+      if (payload.checkTokenHandler.usuario_id === token_decode['userId'] && context.req.headers.authorization.split(" ")[1] != payload.checkTokenHandler.token) {
         return true
       }else{
         return false
