@@ -10,12 +10,12 @@ async function bootstrap() {
   const logger = new Logger('MAIAPUBSUB');
 
   logger.log('USE_SSL:' + process.env.USE_SSL);
-  const isProduction: boolean = process.env.USE_SSL === 'true';
+  const enabledSSL: boolean = process.env.USE_SSL === 'true';
 
   const port = process.env.MS_PORT || 3005;
   let http = 'HTTP';
 
-  if (isProduction) {
+  if (enabledSSL) {
     const secretsDir = join(__dirname, '..', 'secrets');
     logger.log('SSL certificate dir:' + secretsDir);
     try {
