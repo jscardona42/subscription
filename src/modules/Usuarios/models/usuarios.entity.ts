@@ -1,10 +1,11 @@
 import 'reflect-metadata'
-import { ObjectType, Field, ID} from '@nestjs/graphql'
+import { ObjectType, Field, ID } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty } from 'class-validator'
+import { UsuariosSesiones } from './usuariossesiones.entity'
 
 @ObjectType()
 export class Usuarios {
-    @Field((type) => ID)
+    @Field(() => ID)
     usuario_id: number
 
     @Field()
@@ -16,30 +17,29 @@ export class Usuarios {
     @IsEmail()
     email: string
 
-    @Field((type) => Boolean, { nullable: true })
-    activo?: boolean | null
+    @Field(() => String)
+    estado: string
 
-    @Field((type) => Number, { nullable: true })
-    empresa_id?: number | null
+    @Field(() => String)
+    metodo_autenticacion: string
 
-    @Field()
+    @Field(() => Boolean, { nullable: true })
+    conexion_externa?: boolean | null
+
+    @Field(() => String, { nullable: true })
     @IsNotEmpty()
-    username: string
+    username?: string | null
 
-    @Field()
+    @Field(() => String, { nullable: true })
     @IsNotEmpty()
-    password: string
+    password?: string | null
 
-    @Field((type) => String, { nullable: true })
-    token?: string | null
-
-    @Field((type) => String, { nullable: true })
+    @Field(() => String, { nullable: true })
     salt?: string | null
 
-    @Field((type) => Number)
-    rol_id?: number
+    @Field(() => Number, { nullable: true })
+    rol_id?: number | null
 
-    @Field((type) => Number, { nullable: true })
-    tiene_doble_factor?: number | null
-
+    @Field(() => UsuariosSesiones, { nullable: true })
+    UsuariosSesionesSec?: UsuariosSesiones
 }
