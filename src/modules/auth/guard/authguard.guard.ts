@@ -4,79 +4,69 @@ import { GqlExecutionContext } from "@nestjs/graphql";
 import { AuthGuard } from "@nestjs/passport";
 import * as jwt from 'jsonwebtoken'
 import { PrismaService } from "src/prisma/prisma.service";
-import * as CryptoJS from 'crypto-js';  
+import * as CryptoJS from 'crypto-js';
 
 const prisma = new PrismaService();
 
 @Injectable()
 export class GqlAuthGuard extends AuthGuard('jwt') {
 
-    constructor() {       
+    constructor() {
         super();
     }
 
     async canActivate(context: ExecutionContext): Promise<any> {
+        let authorization;
         const ctx = GqlExecutionContext.create(context);
         const req = ctx.getContext().req;
         let query = context.getHandler().name;
 
-        let authorization = req.headers.authorization;  
-        
+        if (req === undefined) {
+            authorization = ctx['args'][2]['authorization'];
+        } else {
+            authorization = req.headers.authorization;
+        }
 
+        try {
+            if (authorization && authorization !== "" && Object.keys(authorization).length > 0) {
 
-        try {            
-
-            if (authorization) {
-                
                 let token = authorization.split(" ")[1];
 
-                // console.log('token',token);
-                
-                let token_decrypt= CryptoJS.AES.decrypt( token,process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8)  
-                let token_decode= jwt.decode(token_decrypt)
-                // console.log('token_decrypt',token_decrypt);
-                
+                let token_decrypt = CryptoJS.AES.decrypt(token, process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8)
+                let token_decode = jwt.decode(token_decrypt)
+
                 if (jwt.verify(token_decrypt, process.env.JWT_SECRET)) {
-                   
 
-
-                    if (query=='checkTokenHandler') {                        
+                    if (query == 'checkTokenHandler') {
                         return true;
                     }
 
-                    let login_user= await prisma.usuarios.findFirst({
-                        where: { 
-                        usuario_id: token_decode['userId'],
-                        token: token_decrypt
+                    let login_user = await prisma.usuarios.findFirst({
+                        where: {
+                            usuario_id: token_decode['userId'],
+                            UsuariosSesionesSec: { token: token_decrypt }
                         },
                     })
 
-                   
-                    
-
                     if (login_user) {
                         return true;
-                    }else{
-                        throw new UnauthorizedException("Unauthorized");
-                    }  
-                
-                }else{
-            
-                    throw new UnauthorizedException("Unauthorized");
+                    } else {
+                        throw new UnauthorizedException("Unauthorized 1");
+                    }
+                } else {
+                    throw new UnauthorizedException("Unauthorized 2");
                 }
-                
-            }else{
-
-                if (query=='checkTokenHandler') {
+            } else {
+                if (query == 'checkTokenHandler') {
                     return true;
                 }
-                throw new UnauthorizedException("Unauthorized");
-            }            
-
-           
-        } catch (error) {   
-                               
-            throw new UnauthorizedException("Unauthorized");
+                throw new UnauthorizedException("Unauthorized 3");
+            }
+        } catch (error) {
+            if (query == 'checkTokenHandler') {
+                return true;
+            }
+            throw new UnauthorizedException("Unauthorized 4");
         }
     }
 }
