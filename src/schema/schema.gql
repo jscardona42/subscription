@@ -2,18 +2,26 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type UsuariosSesiones {
+  usuario_sesion_id: Float!
+  usuario_id: Float!
+  token: String!
+  fecha_ultimo_login: String!
+  Usuarios: Usuarios!
+}
+
 type Usuarios {
   usuario_id: ID!
   nombre: String!
   email: String!
-  activo: Boolean
-  empresa_id: Float
-  username: String!
-  password: String!
-  token: String
+  estado: String!
+  metodo_autenticacion: String!
+  conexion_externa: Boolean
+  username: String
+  password: String
   salt: String
-  rol_id: Float!
-  tiene_doble_factor: Float
+  rol_id: Float
+  UsuariosSesionesSec: UsuariosSesiones
 }
 
 type Query {
