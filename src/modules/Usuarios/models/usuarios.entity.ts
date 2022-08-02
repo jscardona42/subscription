@@ -5,41 +5,53 @@ import { UsuariosSesiones } from './usuariossesiones.entity'
 
 @ObjectType()
 export class Usuarios {
-    @Field(() => ID)
+
+    @Field(() => Number)
     usuario_id: number
 
-    @Field()
+    @Field(() => String)
     @IsNotEmpty()
-    nombre: string
+    nombre_usuario: string
 
-    @Field()
+    @Field(() => String)
+    @IsNotEmpty()
+    contrasena: string
+
+    @Field(() => String)
     @IsNotEmpty()
     @IsEmail()
-    email: string
+    correo: string
 
     @Field(() => String)
-    estado: string
+    salt: string
+
+    @Field(() => Number)
+    rol_id: number
+
+    @Field(() => Number)
+    metodo_autenticacion_id: number
+
+    @Field(() => Number)
+    tipo_usuario_id: number
+
+    @Field(() => Number)
+    estado_usuario_id: number
+
+    @Field(() => Boolean)
+    sol_cambio_contrasena?: boolean 
 
     @Field(() => String)
-    metodo_autenticacion: string
+    fecha_vigencia_contrasena?: string 
 
-    @Field(() => Boolean, { nullable: true })
-    conexion_externa?: boolean | null
+    @Field(() => String)
+    fecha_creacion?: string
 
-    @Field(() => String, { nullable: true })
-    @IsNotEmpty()
-    username?: string | null
+    @Field(() => String)
+    fecha_actualizacion?: string
 
-    @Field(() => String, { nullable: true })
-    @IsNotEmpty()
-    password?: string | null
+    @Field(() => Number)
+    cant_intentos: number 
 
-    @Field(() => String, { nullable: true })
-    salt?: string | null
-
-    @Field(() => Number, { nullable: true })
-    rol_id?: number | null
-
-    @Field(() => UsuariosSesiones, { nullable: true })
-    UsuariosSesionesSec?: UsuariosSesiones
+    @Field(() => UsuariosSesiones)
+    UsuariosSesionesSec: UsuariosSesiones
 }
