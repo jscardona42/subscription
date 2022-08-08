@@ -21,8 +21,9 @@ export class LoginService {
     let payload = await this.prisma.usuarios.findFirst({
       where: {
         usuario_id: token_decode['userId'],
+        UsuariosParametrosValores: { some: { UsuariosParametros: { alias: "authvigenciatoken" } } }
       },
-      include: { UsuariosSesionesSec: true, UsuariosParametrosValores: true }
+      include: { UsuariosSesionesSec: true, UsuariosParametrosValores: { include: { UsuariosParametros: true } } }
     })
 
     Object.assign(payload, { context: ctx });

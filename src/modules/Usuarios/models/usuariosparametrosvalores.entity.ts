@@ -1,11 +1,12 @@
 import 'reflect-metadata'
 import { Field, ObjectType } from "@nestjs/graphql"
+import { UsuariosParametros } from './usuariosparametros.entity'
 
 @ObjectType()
 export class UsuariosParametrosValores {
 
     @Field(() => Number)
-    usuario_parametro_valor_id: number 
+    usuario_parametro_valor_id: number
 
     @Field(() => Number)
     usuario_id: number
@@ -15,4 +16,7 @@ export class UsuariosParametrosValores {
 
     @Field(() => String)
     valor: string
+
+    @Field(() => UsuariosParametros)
+    UsuariosParametros: UsuariosParametros
 }
