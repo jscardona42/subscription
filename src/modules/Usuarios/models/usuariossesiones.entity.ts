@@ -14,8 +14,8 @@ export class UsuariosSesiones {
     @Field(() => String)
     token: string
 
-    @Field(() => String)
-    fecha_ultimo_login: string
+    @Field(() => Date)
+    fecha_ultimo_login: Date
 
     @Field(() => Usuarios)
     Usuarios: Usuarios
