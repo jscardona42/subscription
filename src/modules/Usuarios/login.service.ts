@@ -22,7 +22,7 @@ export class LoginService {
       where: {
         usuario_id: token_decode['userId'],
       },
-      include: { UsuariosSesionesSec: true }
+      include: { UsuariosSesionesSec: true, UsuariosParametrosValores: true }
     })
 
     Object.assign(payload, { context: ctx });
