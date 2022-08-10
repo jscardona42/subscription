@@ -17,14 +17,24 @@ export class LoginService {
     let token_decrypt = CryptoJS.AES.decrypt(token, process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8)
     let token_decode = this.jwtService.decode(token_decrypt)
 
+    let autvigenciasesion = await this.prisma.usuariosParametros.findFirst({
+      where: { alias: "autvigenciasesion" },
+      select: { usuario_parametro_id: true }
+    });
+
+    let usuarioParametroValor = await this.prisma.usuariosParametrosValores.findMany({
+      where: { usuario_parametro_id: autvigenciasesion.usuario_parametro_id, usuario_id: token_decode['userId'] },
+      include: { UsuariosParametros: true }
+    });
 
     let payload = await this.prisma.usuarios.findFirst({
       where: {
         usuario_id: token_decode['userId'],
-        UsuariosParametrosValores: { some: { UsuariosParametros: { alias: "autvigenciasesion" } } }
       },
-      include: { UsuariosSesionesSec: true, UsuariosParametrosValores: { include: { UsuariosParametros: true } } }
+      include: { UsuariosSesionesSec: true }
     })
+
+    Object.assign(payload, { UsuariosParametrosValores: usuarioParametroValor });
 
     Object.assign(payload, { context: ctx });
 
