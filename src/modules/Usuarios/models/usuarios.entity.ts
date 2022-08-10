@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import { ObjectType, Field, ID } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty } from 'class-validator'
 import { UsuariosSesiones } from './usuariossesiones.entity'
+import { UsuariosParametrosValores } from './usuariosparametrosvalores.entity'
 
 @ObjectType()
 export class Usuarios {
@@ -38,10 +39,10 @@ export class Usuarios {
     estado_usuario_id: number
 
     @Field(() => Boolean)
-    sol_cambio_contrasena?: boolean 
+    sol_cambio_contrasena?: boolean
 
     @Field(() => String)
-    fecha_vigencia_contrasena?: string 
+    fecha_vigencia_contrasena?: string
 
     @Field(() => String)
     fecha_creacion?: string
@@ -50,8 +51,11 @@ export class Usuarios {
     fecha_actualizacion?: string
 
     @Field(() => Number)
-    cant_intentos: number 
+    cant_intentos: number
 
     @Field(() => UsuariosSesiones)
     UsuariosSesionesSec: UsuariosSesiones
+
+    @Field(() => [UsuariosParametrosValores])
+    UsuariosParametrosValores: UsuariosParametrosValores[]
 }

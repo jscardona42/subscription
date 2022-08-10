@@ -15,6 +15,30 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type TbClasesParametros {
+  clase_parametro_id: Float!
+  nombre: String!
+}
+
+type UsuariosParametros {
+  usuario_parametro_id: Float!
+  clase_parametro_id: Float!
+  nombre: String!
+  alias: String!
+  descripcion: String!
+  valor_defecto: String!
+  requerido: Boolean!
+  TbClasesParametros: TbClasesParametros!
+}
+
+type UsuariosParametrosValores {
+  usuario_parametro_valor_id: Float!
+  usuario_id: Float!
+  usuario_parametro_id: Float!
+  valor: String!
+  UsuariosParametros: UsuariosParametros!
+}
+
 type Usuarios {
   usuario_id: Float!
   nombre_usuario: String!
@@ -31,6 +55,7 @@ type Usuarios {
   fecha_actualizacion: String!
   cant_intentos: Float!
   UsuariosSesionesSec: UsuariosSesiones!
+  UsuariosParametrosValores: [UsuariosParametrosValores!]!
 }
 
 type Query {
