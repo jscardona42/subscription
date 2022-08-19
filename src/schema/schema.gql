@@ -45,10 +45,6 @@ type Usuarios {
   contrasena: String!
   correo: String!
   salt: String!
-  rol_id: Float!
-  metodo_autenticacion_id: Float!
-  tipo_usuario_id: Float!
-  estado_usuario_id: Float!
   sol_cambio_contrasena: Boolean!
   fecha_vigencia_contrasena: String!
   fecha_creacion: String!

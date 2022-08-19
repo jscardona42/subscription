@@ -60,7 +60,7 @@ model Usuarios {
   correo                          String                         @db.VarChar(100)
   salt                            String                         @db.VarChar
   rol_id                          Int
-  metodo_autenticacion_id         Int
+  metodo_autenticacion_id         Int?
   tipo_usuario_id                 Int
   estado_usuario_id               Int
   sol_cambio_contrasena           Boolean?                       @default(false)
@@ -69,7 +69,7 @@ model Usuarios {
   fecha_actualizacion             DateTime?                      @db.Timestamp(6)
   cant_intentos                   Int                            @default(0)
   TbEstadosUsuarios               TbEstadosUsuarios              @relation(fields: [estado_usuario_id], references: [estado_usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "TbEstadoUsuario_fk")
-  TbMetodosAutenticacion          TbMetodosAutenticacion         @relation(fields: [metodo_autenticacion_id], references: [metodo_autenticacion_id], onDelete: NoAction, onUpdate: NoAction, map: "TbMetodoAutenticacion_fk")
+  TbMetodosAutenticacion          TbMetodosAutenticacion?        @relation(fields: [metodo_autenticacion_id], references: [metodo_autenticacion_id], onDelete: NoAction, onUpdate: NoAction, map: "TbMetodoAutenticacion_fk")
   TbRoles                         TbRoles                        @relation(fields: [rol_id], references: [rol_id], onDelete: NoAction, onUpdate: NoAction, map: "TbRol_fk")
   TbTipoUsuarios                  TbTipoUsuarios                 @relation(fields: [tipo_usuario_id], references: [tipo_usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "TbTipoUsuario_fk")
   UsuariosHistoricoContrasenasSec UsuariosHistoricoContrasenas[]
@@ -187,7 +187,7 @@ model RolesFuncionalidades {
 model UsuariosSesiones {
   usuario_sesion_id  Int       @id(map: "UsuarioSesion_id") @default(autoincrement())
   usuario_id         Int       @unique
-  token              String    @db.VarChar(255)
+  token              String?   @db.VarChar(255)
   fecha_ultimo_login DateTime? @db.Timestamp(6)
   Usuarios           Usuarios  @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "Usuario_fk")
 
@@ -222,7 +222,7 @@ model TbEstadosUsuarios {
 
 model TbMetodosAutenticacion {
   metodo_autenticacion_id Int                 @id(map: "TbMetodoAutenticacion_id") @default(autoincrement())
-  nombre                  String              @db.VarChar(100)
+  nombre                  String              @unique @db.VarChar(100)
   MetodosParametros       MetodosParametros[]
   Usuarios                Usuarios[]
 
@@ -262,7 +262,7 @@ model UsuariosParametros {
   clase_parametro_id        Int
   nombre                    String                      @db.VarChar(100)
   alias                     String                      @db.VarChar(100)
-  descripcion               String                      @db.VarChar(100)
+  descripcion               String                      @db.VarChar(255)
   valor_defecto             String?                     @db.VarChar(50)
   requerido                 Boolean?                    @default(false)
   TbClasesParametros        TbClasesParametros          @relation(fields: [clase_parametro_id], references: [clase_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "TbClaseParametro_fk")
@@ -276,7 +276,7 @@ model UsuariosParametrosValores {
   usuario_parametro_valor_id Int                @id(map: "UsuarioParametroValor_id") @default(autoincrement())
   usuario_id                 Int
   usuario_parametro_id       Int
-  valor                      String?            @db.VarChar(50)
+  valor                      String?            @db.VarChar(255)
   UsuariosParametros         UsuariosParametros @relation(fields: [usuario_parametro_id], references: [usuario_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "UsuarioParametro_fk")
   Usuarios                   Usuarios           @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "Usuario_fk")
 
