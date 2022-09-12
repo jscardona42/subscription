@@ -51,22 +51,22 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
                     if (login_user) {
                         return true;
                     } else {
-                        throw new UnauthorizedException("Unauthorized 1");
+                        throw new UnauthorizedException("Unauthorized");
                     }
                 } else {
-                    throw new UnauthorizedException("Unauthorized 2");
+                    throw new UnauthorizedException("Unauthorized");
                 }
             } else {
                 if (query == 'checkTokenHandler') {
                     return true;
                 }
-                throw new UnauthorizedException("Unauthorized 3");
+                throw new UnauthorizedException("Unauthorized");
             }
         } catch (error) {
             if (query == 'checkTokenHandler') {
                 return true;
             }
-            throw new UnauthorizedException("Unauthorized 4");
+            throw new UnauthorizedException("Unauthorized");
         }
     }
 }

@@ -1,40 +1,37 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { GqlAuthGuard } from './modules/auth/guard/authguard.guard';
-import { NestApplicationOptions, Logger } from '@nestjs/common';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { NestApplicationOptions, ValidationPipe } from '@nestjs/common';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import * as fs from 'fs';
+let https = require('https');
+const express = require("express");
 
 const options: NestApplicationOptions = {};
 async function bootstrap() {
-  const logger = new Logger('MAIAPUBSUB');
 
-  logger.log('USE_SSL:' + process.env.USE_SSL);
-  const enabledSSL: boolean = process.env.USE_SSL === 'true';
+  const options: any = {};
 
-  const port = process.env.MS_PORT || 3005;
-  let http = 'HTTP';
-
-  if (enabledSSL) {
-    const secretsDir = join(__dirname, '..', 'secrets');
-    logger.log('SSL certificate dir:' + secretsDir);
-    try {
-      const httpsOptions = {
-        key: readFileSync(`${secretsDir}/key.pem`),
-        cert: readFileSync(`${secretsDir}/cert.pem`),
-      };
-      options.httpsOptions = httpsOptions;
-      http = 'HTTPS';
-    } catch (error) {
-      logger.log(
-        'No SSL cert found, starting server without SSL. Error:' + error,
-      );
+  // validamos si los archivos existen
+  if (fs.existsSync(process.env.CERTIFICATE_SSL) && fs.existsSync(process.env.KEY_SSL)) {
+    options.httpsOptions = {
+      cert: fs.readFileSync(process.env.CERTIFICATE_SSL),
+      key: fs.readFileSync(process.env.KEY_SSL),
+      requestCert: false,
+      rejectUnauthorized: false,
     }
   }
-  const app = await NestFactory.create(AppModule, options);
+
+  const server = express();
+  const app = await NestFactory.create(
+    AppModule,
+    new ExpressAdapter(server),
+  );
   app.useGlobalGuards(new GqlAuthGuard());
-  await app
-    .listen(port)
-    .then(() => logger.log(`${http} Server running on port ${port}`));
+  app.useGlobalPipes(new ValidationPipe());
+  await app.init();
+
+  https.createServer(options.httpsOptions, server).listen(process.env.PORT || 3005);
+
 }
 bootstrap();
