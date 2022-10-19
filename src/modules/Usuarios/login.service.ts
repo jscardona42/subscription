@@ -11,7 +11,15 @@ export class LoginService {
   ) { }
 
   public async checktoken(ctx): Promise<any> {
-    let authorization = ctx.req.headers.authorization;
+
+    let header_name;
+
+    for (let key in ctx.req.headers) {
+      if (key.startsWith("authorization")) {
+        header_name = key;
+      }
+    }
+    let authorization = ctx.req.headers[header_name];
 
     let token = authorization.split(" ")[1]
     let token_decrypt = CryptoJS.AES.decrypt(token, process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8)

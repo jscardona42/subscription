@@ -24,7 +24,13 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
         if (req === undefined) {
             authorization = ctx['args'][2]['authorization'];
         } else {
-            authorization = req.headers.authorization;
+            let header_name;
+            for (let key in req.headers) {
+                if (key.startsWith("authorization")) {
+                    header_name = key;
+                }
+            }
+            authorization = req.headers[header_name];
         }
 
         try {
