@@ -1,42 +1,41 @@
 import 'reflect-metadata'
-import { Field, InputType, } from '@nestjs/graphql'
+import { Field, InputType } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
-
 
 @InputType()
 export class SignUpUserInput {
-    @Field()
-    @IsNotEmpty()
-    username: string
 
-    @Field()
+    @Field(() => String)
     @IsNotEmpty()
-    password: string
+    nombre_usuario: string
 
-    @Field()
-    rol_id: number
+    @Field(() => String)
+    @IsNotEmpty()
+    correo: string
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    estado_usuario_id: number
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    tipo_usuario_id: number
+
+    @Field(() => Number, { nullable: true })
+    metodo_autenticacion_id?: number
 }
 
 @InputType()
 export class SignInUserInput {
-    @Field()
-    username: string
+    @Field(() => String)
+    @IsNotEmpty()
+    nombre_usuario: string
 
-    @Field()
-    password: string
+    @Field(() => String)
+    @IsNotEmpty()
+    contrasena: string
 }
 
-@InputType()
-export class ChangePasswordInput {
-    @Field()
-    @IsNotEmpty()
-    usuario_id: number
 
-    @Field()
-    @IsNotEmpty()
-    password: string
 
-    @Field()
-    @IsNotEmpty()
-    new_password: string
-}
+
